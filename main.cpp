@@ -36,8 +36,11 @@ string getTargetMAC()
 	return target;
 }
 
-// Frame ( 102 bytes total ) to be sent as an ethernet broadcast message -
-// Payload to be six bytes of all 255 and sixteen repeating MAC address
+/**
+ * A network frame (102 bytes total) to be sent as an ethernet broadcast message.
+ * Payload to be six bytes of all 255 (FF:FF:FF:FF:FF:FF is the broadcast address of an ethernet network)
+ * and sixteen repeating MAC addresses (the target's MAC address).
+ */
 string createMagicPacket(string mac)
 {
 	string payload;
