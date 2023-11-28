@@ -44,7 +44,7 @@ string getTargetMAC()
 string createMagicPacket(string mac)
 {
 	string payload;
-
+	// take the MAC address and iterate 16 times, appending the broadcast address to it
 	return payload;
 }
 
