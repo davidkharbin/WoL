@@ -25,6 +25,46 @@ int main()
 	return 0;
 }
 
+// Function to save target MAC addresses to a file
+void saveTargetMAC(const vector<string> &targetMACs, const string &filename)
+{
+	ofstream file(filename);
+	if (file.is_open())
+	{
+		for (const string &mac : targetMACs)
+		{
+			file << mac << endl;
+		}
+		file.close();
+		cout << "Target MAC addresses saved to " << filename << endl;
+	}
+	else
+	{
+		cerr << "Unable to open file: " << filename << endl;
+	}
+}
+
+// Function to load target MAC addresses from a file
+vector<string> loadTargetMAC(const string &filename)
+{
+	vector<string> targetMACs;
+	ifstream file(filename);
+	if (file.is_open())
+	{
+		string line;
+		while (getline(file, line))
+		{
+			targetMACs.push_back(line);
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "Unable to open file: " << filename << endl;
+	}
+	return targetMACs;
+}
+
 // Take MAC address and send Wake-on-LAN packet
 void sendPacket(string macAddress)
 {
