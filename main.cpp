@@ -15,6 +15,7 @@ using namespace std;
 void sendPacket(string);
 void saveTargetMAC(const vector<string> &targetMACs, const string &filename);
 vector<string> loadTargetMAC(const string &filename);
+void removeTargetMAC(vector<string> &targetMACs, int index, const string &filename);
 
 int main()
 {
@@ -24,32 +25,66 @@ int main()
 	// Load target MACs from file
 	savedMACs = loadTargetMAC(filename);
 
-	// Offer options to the user
-	cout << "Choose a target MAC address:" << endl;
-	for (size_t i = 0; i < savedMACs.size(); ++i)
-	{
-		cout << i + 1 << ". " << savedMACs[i] << endl;
-	}
-	cout << "Enter your choice (number) or enter a new MAC address: ";
+	cout << "Choose an option:" << endl;
+	cout << "1. Select a target MAC address" << endl;
+	cout << "2. Add a new MAC address" << endl;
+	cout << "3. Remove a saved MAC address" << endl;
+	cout << "Enter your choice (1, 2, or 3): ";
 
-	int choice;
-	cin >> choice;
+	int option;
+	cin >> option;
 	cin.ignore(); // Clear newline character from input buffer
 
-	string selectedMAC;
-	if (choice > 0 && choice <= savedMACs.size())
+	if (option == 1)
 	{
-		selectedMAC = savedMACs[choice - 1];
+		cout << "Choose a target MAC address:" << endl;
+		for (size_t i = 0; i < savedMACs.size(); ++i)
+		{
+			cout << i + 1 << ". " << savedMACs[i] << endl;
+		}
+		cout << "Enter the index of the MAC address: ";
+		int choice;
+		cin >> choice;
+		cin.ignore(); // Clear newline character from input buffer
+
+		if (choice > 0 && choice <= savedMACs.size())
+		{
+			string selectedMAC = savedMACs[choice - 1];
+			sendPacket(selectedMAC);
+		}
+		else
+		{
+			cerr << "Invalid choice." << endl;
+		}
+	}
+	else if (option == 2)
+	{
+		cout << "Enter a new MAC address (format: XX:XX:XX:XX:XX:XX): ";
+		string newMAC;
+		cin >> newMAC;
+		cin.ignore(); // Clear newline character from input buffer
+		savedMACs.push_back(newMAC);
+		saveTargetMAC(savedMACs, filename);
+		cout << "New MAC address added successfully." << endl;
+	}
+	else if (option == 3)
+	{
+		cout << "Select a MAC address to remove:" << endl;
+		for (size_t i = 0; i < savedMACs.size(); ++i)
+		{
+			cout << i + 1 << ". " << savedMACs[i] << endl;
+		}
+		cout << "Enter the index of the MAC address to remove: ";
+		int index;
+		cin >> index;
+		cin.ignore();																		 // Clear newline character from input buffer
+		removeTargetMAC(savedMACs, index - 1, filename); // Adjust index to match vector index
 	}
 	else
 	{
-		cout << "Enter a new MAC address (format: XX:XX:XX:XX:XX:XX): ";
-		cin >> selectedMAC;
-		savedMACs.push_back(selectedMAC);		// Add new MAC to the list
-		saveTargetMAC(savedMACs, filename); // Save updated list to file
+		cerr << "Invalid choice." << endl;
 	}
 
-	sendPacket(selectedMAC);
 	return 0;
 }
 
@@ -91,6 +126,21 @@ vector<string> loadTargetMAC(const string &filename)
 		cerr << "Unable to open file: " << filename << endl;
 	}
 	return targetMACs;
+}
+
+// Function to remove a target MAC address from the list
+void removeTargetMAC(vector<string> &targetMACs, int index, const string &filename)
+{
+	if (index >= 0 && index < targetMACs.size())
+	{
+		targetMACs.erase(targetMACs.begin() + index);
+		saveTargetMAC(targetMACs, filename);
+		cout << "MAC address removed successfully." << endl;
+	}
+	else
+	{
+		cerr << "Invalid index." << endl;
+	}
 }
 
 // Take MAC address and send Wake-on-LAN packet
