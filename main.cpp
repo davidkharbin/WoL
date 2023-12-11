@@ -12,6 +12,7 @@
 #include <fstream>
 
 using namespace std;
+
 void sendPacket(string);
 void saveTargetMAC(const vector<string> &targetMACs, const string &filename);
 vector<string> loadTargetMAC(const string &filename);
@@ -184,7 +185,7 @@ void sendPacket(string macAddress)
 	struct sockaddr_in addr;
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(9);														 // WoL (should) uses port 9
+	addr.sin_port = htons(9);														 // WoL (usually) uses port 9
 	addr.sin_addr.s_addr = inet_addr("255.255.255.255"); // Broadcast IP address
 
 	// Send the magic packet
