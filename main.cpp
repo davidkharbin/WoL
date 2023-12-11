@@ -9,17 +9,17 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <fstream>
 
 using namespace std;
 void sendPacket(string);
 
 int main()
 {
+	string targetMAC;
 
-	string targetMAC = "d4:5d:64:b4:19:ee"; // Replace with the MAC address of the target machine
-
-	// hard-coding the MAC for testing
-	// cin >> targetMAC;
+	cout << "Enter the MAC address of the target machine (format: XX:XX:XX:XX:XX:XX): ";
+	cin >> targetMAC;
 
 	sendPacket(targetMAC);
 	return 0;
