@@ -13,15 +13,43 @@
 
 using namespace std;
 void sendPacket(string);
+void saveTargetMAC(const vector<string> &targetMACs, const string &filename);
+vector<string> loadTargetMAC(const string &filename);
 
 int main()
 {
-	string targetMAC;
+	vector<string> savedMACs;
+	string filename = "targetMACs.txt"; // File to store target MACs
 
-	cout << "Enter the MAC address of the target machine (format: XX:XX:XX:XX:XX:XX): ";
-	cin >> targetMAC;
+	// Load target MACs from file
+	savedMACs = loadTargetMAC(filename);
 
-	sendPacket(targetMAC);
+	// Offer options to the user
+	cout << "Choose a target MAC address:" << endl;
+	for (size_t i = 0; i < savedMACs.size(); ++i)
+	{
+		cout << i + 1 << ". " << savedMACs[i] << endl;
+	}
+	cout << "Enter your choice (number) or enter a new MAC address: ";
+
+	int choice;
+	cin >> choice;
+	cin.ignore(); // Clear newline character from input buffer
+
+	string selectedMAC;
+	if (choice > 0 && choice <= savedMACs.size())
+	{
+		selectedMAC = savedMACs[choice - 1];
+	}
+	else
+	{
+		cout << "Enter a new MAC address (format: XX:XX:XX:XX:XX:XX): ";
+		cin >> selectedMAC;
+		savedMACs.push_back(selectedMAC);		// Add new MAC to the list
+		saveTargetMAC(savedMACs, filename); // Save updated list to file
+	}
+
+	sendPacket(selectedMAC);
 	return 0;
 }
 
